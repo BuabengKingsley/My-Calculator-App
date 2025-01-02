@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f0f0;
+        }
+
+        .calculator {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .display {
+            background: #f8f8f8;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: right;
+            font-size: 2em;
+            min-height: 60px;
+            overflow: hidden;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 15px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background: #e0e0e0;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #d0d0d0;
+        }
+
+        .operator {
+            background: #ff9500;
+            color: white;
+        }
+
+        .operator:hover {
+            background: #ff8000;
+        }
+
+        .equals {
+            background: #2196F3;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .equals:hover {
+            background: #1976D2;
+        }
+
+        .clear {
+            background: #ff4444;
+            color: white;
+        }
+
+        .clear:hover {
+            background: #cc0000;
+        }
+
+        @media (max-width: 480px) {
+            .calculator {
+                margin: 10px;
+            }
+
+            button {
+                padding: 10px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h2>The Kingbuworldview Calculator </h2>
+        <div class="display">0</div>
+        <div class="buttons">
+            <button class="clear">C</button>
+            <button class="operator">±</button>
+            <button class="operator">%</button>
+            <button class="operator">÷</button>
+            <button>7</button>
+            <button>8</button>
+            <button>9</button>
+            <button class="operator">×</button>
+            <button>4</button>
+            <button>5</button>
+            <button>6</button>
+            <button class="operator">-</button>
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+            <button class="operator">+</button>
+            <button>0</button>
+            <button>.</button>
+            <button class="equals">=</button>
+        </div>
+    </div>
+
+    <script>
+        const display = document.querySelector('.display');
+        const buttons = document.querySelectorAll('button');
+        let firstOperand = '';
+        let secondOperand = '';
+        let currentOperation = null;
+        let shouldResetScreen = false;
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (button.classList.contains('clear')) {
+                    clear();
+                    return;
+                }
+
+                if (button.classList.contains('operator')) {
+                    handleOperator(button.textContent);
+                    return;
+                }
+
+                if (button.classList.contains('equals')) {
+                    evaluate();
+                    return;
+                }
+
+                appendNumber(button.textContent);
+            });
+        });
+
+        function clear() {
+            display.textContent = '0';
+            firstOperand = '';
+            secondOperand = '';
+            currentOperation = null;
+        }
+
+        function appendNumber(number) {
+            if (display.textContent === '0' || shouldResetScreen) {
+                display.textContent = '';
+                shouldResetScreen = false;
+            }
+            display.textContent += number;
+        }
+
+        function handleOperator(operator) {
+            if (currentOperation !== null) evaluate();
+            firstOperand = display.textContent;
+            currentOperation = operator;
+            shouldResetScreen = true;
+        }
+
+        function evaluate() {
+            if (currentOperation === null || shouldResetScreen) return;
+            secondOperand = display.textContent;
+            display.textContent = operate(currentOperation, firstOperand, secondOperand);
+            currentOperation = null;
+        }
+
+        function operate(operator, a, b) {
+            a = Number(a);
+            b = Number(b);
+            switch (operator) {
+                case '+':
+                    return a + b;
+                case '-':
+                    return a - b;
+                case '×':
+                    return a * b;
+                case '÷':
+                    return b === 0 ? 'Error' : a / b;
+                case '%':
+                    return a % b;
+                case '±':
+                    return -b;
+                default:
+                    return null;
+            }
+        }
+    </script>
+</body>
+</html>
